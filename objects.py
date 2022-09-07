@@ -1,7 +1,6 @@
 import random
 
-from colors import Colors
-from common import Coordinate, MovementDirection, RenderInfo
+from common import Colors, Coordinate, MovementDirection, RenderInfo
 
 
 class MapPoint:

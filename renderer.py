@@ -1,5 +1,4 @@
-from colors import Colors, PygameColor
-from common import Coordinate, PxSize
+from common import Colors, Coordinate, PxSize, PygameColor
 from objects import Food, Map, MapPoint, Snake
 from window_manager import WindowManager
 

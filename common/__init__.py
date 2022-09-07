@@ -1,7 +1,16 @@
 from enum import IntEnum
 from typing import Tuple, TypedDict
 
-from colors import PygameColor
+from .colors import PygameColor, Colors
+
+__all__ = [
+    "Colors",
+    "PygameColor",
+    "Coordinate",
+    "PxSize",
+    "MovementDirection",
+    "RenderInfo",
+]
 
 Coordinate = Tuple[int, int]
 PxSize = Tuple[int, int]

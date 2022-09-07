@@ -1,8 +1,7 @@
 import pygame
 from pygame.rect import Rect
 
-from colors import Colors, PygameColor
-from common import Coordinate
+from common import Colors, Coordinate, PygameColor
 
 
 class WindowManager:
