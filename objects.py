@@ -36,7 +36,18 @@ class Snake:
         self.positions: list[MapPoint] = [initial_placement]
         self.current_direction = MovementDirection.UP
 
+    def __len__(self) -> int:
+        return len(self.positions)
+
+    @property
+    def size(self) -> int:
+        return len(self)
+
     def set_current_direction(self, direction: MovementDirection) -> None:
+        if direction * -1 == self.current_direction and self.size > 1:
+            print("Cannot turn around")
+            return
+
         self.current_direction = direction
 
     def get_next_position(self) -> MapPoint:
@@ -75,7 +86,7 @@ class Food:
                 random.randint(0, self.max_x), random.randint(0, self.max_y)
             )
 
-            if all([pos != food_pos for pos in self.snake_positions]):
+            if all([snake_pos != food_pos for snake_pos in self.snake_positions]):
                 self.current_food = food_pos
                 return
 
