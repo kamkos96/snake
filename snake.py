@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 
 import time
+from threading import Thread
 
 import pygame
 import pygame.locals
@@ -28,21 +29,24 @@ def handle_keyboard(snake: Snake) -> None:
                     snake.set_direction(MovementDirection.RIGHT)
 
 
-def move_snake(snake: Snake, map: Map, food: Food):
-    next_pos: MapPoint = snake.get_next_position()
+def snake_movement_loop(snake: Snake, map: Map, food: Food) -> None:
+    while True:
+        next_pos: MapPoint = snake.get_next_position()
 
-    if next_pos in snake.positions:
-        print("ERROR - snake collides with itself")
+        if next_pos in snake.positions:
+            print("ERROR - snake collides with itself")
+            return
 
-    if map.is_point_out_of_bounds(next_pos):
-        next_pos.adjust_to_bounds(map)
-        # print("ERROR - next snake position out of map")
+        if map.is_point_out_of_bounds(next_pos):
+            next_pos.adjust_to_bounds(map)
 
-    if next_pos == food.current_food:
-        snake.move(next_pos, True)
-        food.generate()
-    else:
-        snake.move(next_pos, False)
+        if next_pos == food.position:
+            snake.move(next_pos, True)
+            food.generate()
+        else:
+            snake.move(next_pos, False)
+
+        pygame.time.wait(SNAKE_MOVEMENT_PERIOD_MS)
 
 
 if __name__ == "__main__":
@@ -52,7 +56,6 @@ if __name__ == "__main__":
     game_map: Map = Map(40, 40)
     snake: Snake = Snake(game_map.get_center())
     food: Food = Food(snake.positions, (game_map.width, game_map.height))
-    food.generate()
 
     # initialize rendering objects
     renderer = Renderer(game_map, snake, food)
@@ -66,25 +69,21 @@ if __name__ == "__main__":
     wm = WindowManager(window_size, "Snake")
 
     # initialize game loop variables
-    frame_num = 0
-    snake_movement_timer = time.time_ns()
+    target_loop_time_ms: float = 1000 / TARGET_FRAMERATE
+
+    snake_loop_thread = Thread(target=snake_movement_loop, args=(snake, game_map, food))
+    snake_loop_thread.start()
 
     # enter game loop
     while True:
-        start_time = time.time_ns()
+        start_time_ns = time.time_ns()
 
         handle_keyboard(snake)
 
-        if time.time_ns() - snake_movement_timer >= SNAKE_MOVEMENT_PERIOD_MS * 1000000:
-            move_snake(snake, game_map, food)
-            snake_movement_timer = time.time_ns()
-
         renderer.render_map_points(wm, (5, 5))
 
-        frame_num += 1
-
-        end_time = time.time_ns()
-        sleep_ms: int = int((1000 / TARGET_FRAMERATE) - (end_time - start_time) / 1000000)
+        current_loop_time_ms: float = (time.time_ns() - start_time_ns) / 1000000
+        sleep_ms: int = int(target_loop_time_ms - current_loop_time_ms)
 
         if sleep_ms > 0:
             pygame.time.delay(sleep_ms)

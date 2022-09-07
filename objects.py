@@ -93,7 +93,8 @@ class Food:
         self.snake_positions: list[MapPoint] = snake_positions
         self.max_x = max_size[0] - 1
         self.max_y = max_size[1] - 1
-        self.current_food: MapPoint | None = None
+        self.position: MapPoint | None = None
+        self.generate()
 
     def generate(self) -> None:
         while True:
@@ -102,7 +103,7 @@ class Food:
             )
 
             if all([snake_pos != food_pos for snake_pos in self.snake_positions]):
-                self.current_food = food_pos
+                self.position = food_pos
                 return
 
 

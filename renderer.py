@@ -61,7 +61,7 @@ class Renderer:
         for point in self.snake.positions:
             _draw_point_rect(*point.coord, Snake.render["color"])
 
-        if self.food.current_food:
-            _draw_point_rect(*self.food.current_food.coord, Food.render["color"])
+        if self.food.position:
+            _draw_point_rect(*self.food.position.coord, Food.render["color"])
 
         wm.update_window()
