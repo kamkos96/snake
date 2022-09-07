@@ -34,7 +34,8 @@ class Snake:
 
     def __init__(self, initial_placement: MapPoint) -> None:
         self.positions: list[MapPoint] = [initial_placement]
-        self.current_direction = MovementDirection.UP
+        self.current_dir: MovementDirection = MovementDirection.UP
+        self.moved_after_direction_change: bool = False
 
     def __len__(self) -> int:
         return len(self.positions)
@@ -43,16 +44,21 @@ class Snake:
     def size(self) -> int:
         return len(self)
 
-    def set_current_direction(self, direction: MovementDirection) -> None:
-        if direction * -1 == self.current_direction and self.size > 1:
-            print("Cannot turn around")
+    def set_direction(self, direction: MovementDirection) -> None:
+        if not self.moved_after_direction_change:
+            print("Cannot change direction again before moving one space")
             return
 
-        self.current_direction = direction
+        if direction in (self.current_dir, self.current_dir * -1) and self.size > 1:
+            print("Cannot change direction to forwards or backwards")
+            return
+
+        self.current_dir = direction
+        self.moved_after_direction_change = False
 
     def get_next_position(self) -> MapPoint:
         base: MapPoint = self.positions[0]
-        match self.current_direction:
+        match self.current_dir:
             case MovementDirection.UP:
                 return MapPoint(base.x, base.y - 1)
             case MovementDirection.DOWN:
@@ -64,11 +70,14 @@ class Snake:
 
     def move(self, next_pos: MapPoint, keep_last: bool = False) -> None:
         self.positions.insert(0, next_pos)
+
         if not keep_last:
             self.positions.pop()
 
-    def eat_food(self, pos: MapPoint) -> None:
-        self.move(pos, True)
+        self.moved_after_direction_change = True
+
+    def move_and_eat(self, next_pos: MapPoint) -> None:
+        self.move(next_pos, True)
 
 
 class Food:
