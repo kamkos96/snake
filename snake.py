@@ -3,14 +3,29 @@
 import time
 
 import pygame
+import pygame.locals
 
-from common import PxSize
+from common import MovementDirection, PxSize
 from objects import Food, Map, MapPoint, Snake
 from renderer import Renderer
 from window_manager import WindowManager
 
 TARGET_FRAMERATE = 60
-SNAKE_MOVEMENT_PERIOD_MS = 250
+SNAKE_MOVEMENT_PERIOD_MS = 200
+
+
+def handle_keyboard(snake: Snake) -> None:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            match event.key:
+                case pygame.locals.K_UP:
+                    snake.set_current_direction(MovementDirection.UP)
+                case pygame.locals.K_DOWN:
+                    snake.set_current_direction(MovementDirection.DOWN)
+                case pygame.locals.K_LEFT:
+                    snake.set_current_direction(MovementDirection.LEFT)
+                case pygame.locals.K_RIGHT:
+                    snake.set_current_direction(MovementDirection.RIGHT)
 
 
 def move_snake(snake: Snake, map: Map, food: Food):
@@ -54,6 +69,8 @@ if __name__ == "__main__":
     # enter game loop
     while True:
         start_time = time.time_ns()
+
+        handle_keyboard(snake)
 
         if time.time_ns() - snake_movement_timer >= SNAKE_MOVEMENT_PERIOD_MS * 1000000:
             move_snake(snake, game_map, food)
