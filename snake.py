@@ -31,7 +31,7 @@ def snake_movement_loop(snake: Snake, map: Map, food: Food) -> None:
     while True:
         next_pos: MapPoint = snake.get_next_position()
 
-        if next_pos in snake.positions:
+        if next_pos in snake.positions[:-1]:
             print("ERROR - snake collides with itself")
             return
 
