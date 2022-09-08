@@ -39,10 +39,10 @@ def snake_movement_loop(snake: Snake, map: Map, food: Food) -> None:
             next_pos.adjust_to_bounds(map)
 
         if next_pos == food.position:
-            snake.move(next_pos, True)
+            snake.move_and_eat(next_pos)
             food.generate()
         else:
-            snake.move(next_pos, False)
+            snake.move(next_pos)
 
         pygame.time.wait(SNAKE_MOVEMENT_PERIOD_MS)
 
