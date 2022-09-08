@@ -7,12 +7,10 @@ import pygame
 import pygame.locals
 
 from common import MovementDirection, PxSize
+from common.locals import MAP_DIMENSIONS, SNAKE_MOVEMENT_PERIOD_MS, TARGET_FRAMERATE
 from objects import Food, Map, MapPoint, Snake
 from renderer import Renderer
 from window_manager import WindowManager
-
-TARGET_FRAMERATE = 60
-SNAKE_MOVEMENT_PERIOD_MS = 100
 
 
 def handle_keyboard(snake: Snake) -> None:
@@ -53,7 +51,7 @@ if __name__ == "__main__":
     pygame.init()
 
     # initialize in-game objects
-    game_map: Map = Map(40, 40)
+    game_map: Map = Map(*MAP_DIMENSIONS)
     snake: Snake = Snake(game_map.get_center())
     food: Food = Food(snake.positions, (game_map.width, game_map.height))
 

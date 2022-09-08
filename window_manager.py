@@ -6,7 +6,8 @@ from common import Colors, Coordinate, PygameColor
 
 class WindowManager:
     def __init__(self, window_size: Coordinate, window_title: str):
-        self._window = pygame.display.set_mode(window_size)
+        self._flags = pygame.SCALED
+        self._window = pygame.display.set_mode(window_size, self._flags)
 
         self.set_window_title(window_title)
         self.set_background_color(Colors.JET_BLACK)

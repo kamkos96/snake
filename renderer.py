@@ -1,9 +1,7 @@
-from common import Colors, Coordinate, PxSize, PygameColor
+from common import Colors, Coordinate, PygameColor
+from common.locals import MAP_POINT_SIZE, SPACE_SIZE
 from objects import Food, Map, MapPoint, Snake
 from window_manager import WindowManager
-
-MAP_POINT_SIZE: PxSize = (8, 8)
-SPACE_SIZE: PxSize = (2, 2)
 
 
 class Renderer:
