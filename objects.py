@@ -35,11 +35,18 @@ class Segment(MapPoint):
 
 
 class Snake:
-    render: RenderInfo = {"color": Colors.WHITE}
+    head_color: Colors = Colors.RED
+    body_color: Colors = Colors.WHITE
+    extend_color: Colors = Colors.YELLOW
 
     def __init__(self, initial_placement: MapPoint) -> None:
+        x = initial_placement.x
+        y = initial_placement.y
+
         self.positions: list[Segment] = [
-            Segment(initial_placement.x, initial_placement.y, Colors.WHITE)
+            Segment(x, y, self.head_color),
+            Segment(x, y + 1, self.body_color),
+            Segment(x, y + 2, self.body_color),
         ]
         self.current_dir: MovementDirection = MovementDirection.UP
         self.next_dir: MovementDirection | None = None
@@ -53,7 +60,7 @@ class Snake:
         return len(self)
 
     def set_direction(self, direction: MovementDirection) -> None:
-        if direction in (self.current_dir, self.current_dir * -1) and self.size > 1:
+        if direction in (self.current_dir, self.current_dir * -1):
             print("Cannot change direction to forwards or backwards")
             return
 
@@ -77,9 +84,17 @@ class Snake:
                 return MapPoint(base.x + 1, base.y)
 
     def move(self, next_pos: MapPoint, currently_eating: bool = False) -> None:
-        color = Colors.YELLOW if currently_eating else Colors.WHITE
+        if self.positions[0].color == self.head_color:
+            self.positions[0].color = self.body_color
 
-        self.positions.insert(0, Segment(next_pos.x, next_pos.y, color))
+        self.positions.insert(
+            0,
+            Segment(
+                next_pos.x,
+                next_pos.y,
+                self.extend_color if currently_eating else self.head_color,
+            ),
+        )
 
         if not currently_eating:
             self.positions.pop()
