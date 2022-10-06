@@ -28,11 +28,19 @@ class MapPoint:
             self.y = 0
 
 
+class Segment(MapPoint):
+    def __init__(self, x: int, y: int, color: Colors):
+        MapPoint.__init__(self, x, y)
+        self.color = color
+
+
 class Snake:
     render: RenderInfo = {"color": Colors.WHITE}
 
     def __init__(self, initial_placement: MapPoint) -> None:
-        self.positions: list[MapPoint] = [initial_placement]
+        self.positions: list[Segment] = [
+            Segment(initial_placement.x, initial_placement.y, Colors.WHITE)
+        ]
         self.current_dir: MovementDirection = MovementDirection.UP
         self.next_dir: MovementDirection | None = None
         self.moved_after_direction_change: bool = False
@@ -68,10 +76,12 @@ class Snake:
             case MovementDirection.RIGHT:
                 return MapPoint(base.x + 1, base.y)
 
-    def move(self, next_pos: MapPoint, keep_last: bool = False) -> None:
-        self.positions.insert(0, next_pos)
+    def move(self, next_pos: MapPoint, currently_eating: bool = False) -> None:
+        color = Colors.YELLOW if currently_eating else Colors.WHITE
 
-        if not keep_last:
+        self.positions.insert(0, Segment(next_pos.x, next_pos.y, color))
+
+        if not currently_eating:
             self.positions.pop()
 
         self.moved_after_direction_change = True

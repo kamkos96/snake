@@ -56,7 +56,7 @@ class Renderer:
                 _draw_point_rect(width_pos, height_pos, MapPoint.render["color"])
 
         for point in self.snake.positions:
-            _draw_point_rect(*point.coord, Snake.render["color"])
+            _draw_point_rect(*point.coord, point.color)
 
         if self.food.position:
             _draw_point_rect(*self.food.position.coord, Food.render["color"])
